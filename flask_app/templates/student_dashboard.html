@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; background: #f0f2f5; margin: 0; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 15px; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #495057; }
+        .present { color: #28a745; font-weight: bold; background: #e6f4ea; padding: 4px 8px; border-radius: 4px; }
+        .absent { color: #dc3545; font-weight: bold; background: #fce8e6; padding: 4px 8px; border-radius: 4px; }
+        h2, h3 { color: #333; margin-top: 0; }
+        a { color: #dc3545; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h2>Student Access Area</h2>
+            <div style="color: #666; font-size: 1.1em;">Department: <strong>{{ department|upper }}</strong></div>
+        </div>
+        <div>
+            Welcome, <strong>{{ current_user.name }}</strong> | <a href="{{ url_for('settings') }}">Settings</a> | <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>My Attendance History</h3>
+        <table>
+            <tr><th>Date Recorded</th><th>Status</th></tr>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.date }}</td>
+                <td><span class="{% if record.status == 'Present' %}present{% else %}absent{% endif %}">{{ record.status }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2" style="color: #777; text-align: center; padding: 30px;">You do not have any attendance records yet.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

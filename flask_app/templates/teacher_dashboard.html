@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; background: #f0f2f5; margin: 0; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 15px; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #495057; }
+        button { padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s;}
+        button.absent { background: #dc3545; }
+        button:hover { opacity: 0.9; }
+        h2, h3 { color: #333; margin-top: 0; }
+        a { color: #dc3545; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h2>Dashboard</h2>
+            <div style="color: #666; font-size: 1.1em;">Department: <strong>{{ department|upper }}</strong></div>
+        </div>
+        <div>
+            Welcome, <strong>{{ current_user.name }}</strong> | <a href="{{ url_for('settings') }}">Settings</a> | <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div style="background: #e6f4ea; color: #1e8e3e; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Mark Attendance</h3>
+            <div>
+                <label for="global_date" style="font-weight: bold; margin-right: 10px; color: #333;">Select Date: </label>
+                <input type="date" id="global_date" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;">
+                <script>
+                    document.getElementById('global_date').valueAsDate = new Date();
+                </script>
+            </div>
+        </div>
+        <table>
+            <tr><th>Student Name</th><th>Attendance %</th><th>Action Actions</th></tr>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>
+                    {% set pct = stats[student.id] %}
+                    <span style="color: {% if pct >= 75 %}#28a745{% elif pct >= 50 %}#ffc107{% else %}#dc3545{% endif %}; font-weight: bold; background: {% if pct >= 75 %}#e6f4ea{% elif pct >= 50 %}#fff8e1{% else %}#fce8e6{% endif %}; padding: 4px 8px; border-radius: 4px;">
+                        {{ pct }}%
+                    </span>
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('mark_attendance') }}" style="display:inline;" onsubmit="this.attendance_date.value = document.getElementById('global_date').value || new Date().toISOString().split('T')[0];">
+                        <input type="hidden" name="student_id" value="{{ student.id }}">
+                        <input type="hidden" name="status" value="Present">
+                        <input type="hidden" name="attendance_date" value="">
+                        <button type="submit">Present</button>
+                    </form>
+                    &nbsp;&nbsp;
+                    <form method="POST" action="{{ url_for('mark_attendance') }}" style="display:inline;" onsubmit="this.attendance_date.value = document.getElementById('global_date').value || new Date().toISOString().split('T')[0];">
+                        <input type="hidden" name="student_id" value="{{ student.id }}">
+                        <input type="hidden" name="status" value="Absent">
+                        <input type="hidden" name="attendance_date" value="">
+                        <button type="submit" class="absent">Absent</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" style="color:#777;">No students enrolled in this department yet.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Recent Department Records</h3>
+        <table>
+            <tr><th>Date</th><th>Student Name</th><th>Status</th><th>Actions</th></tr>
+            {% for record in records[:20] %}
+            <tr>
+                <td><strong>{{ record.date }}</strong></td>
+                <td>{{ record.student.name }}</td>
+                <td><span style="color: {% if record.status == 'Present' %}#28a745{% elif record.status == 'Absent' %}#dc3545{% else %}#ffc107{% endif %}; font-weight: bold;">{{ record.status }}</span></td>
+                <td>
+                    <form method="POST" action="{{ url_for('modify_record', record_id=record.id) }}" style="display:inline;">
+                        <select name="new_status" style="padding: 6px; border-radius: 4px; border: 1px solid #ccc;">
+                            <option value="Present" {% if record.status == 'Present' %}selected{% endif %}>Present</option>
+                            <option value="Absent" {% if record.status == 'Absent' %}selected{% endif %}>Absent</option>
+                            <option value="Leave" {% if record.status == 'Leave' %}selected{% endif %}>Leave</option>
+                        </select>
+                        <button type="submit" style="background: #ffc107; color: #333; padding: 6px 10px;">Update</button>
+                    </form>
+                    &nbsp;&nbsp;
+                    <form method="POST" action="{{ url_for('delete_record', record_id=record.id) }}" style="display:inline;">
+                        <button type="submit" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer;">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" style="color:#777; text-align:center;">No records found.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

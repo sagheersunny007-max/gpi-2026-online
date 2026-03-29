@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Settings</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; background: #f0f2f5; margin: 0; display: flex; justify-content: center; }
+        .container { width: 450px; margin-top: 50px; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 12px; margin: 10px 0 25px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
+        label { font-weight: bold; color: #333; }
+        button { width: 100%; padding: 12px; background: #0866ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: background 0.2s; }
+        button:hover { background: #0056e0; }
+        a { color: #0866ff; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+        .flash-success { background: #e6f4ea; color: #1e8e3e; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center; border-left: 5px solid #1e8e3e;}
+        .flash-error { background: #fce8e6; color: #dc3545; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center; border-left: 5px solid #dc3545;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2 style="margin: 0;">Account Settings</h2>
+            <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+        </div>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="{% if 'already in use' in messages[0] %}flash-error{% else %}flash-success{% endif %}">
+                {{ messages[0] }}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <form method="POST">
+                <label>Change Email Address</label>
+                <input type="email" name="new_email" placeholder="Enter new email" value="{{ current_user.email }}">
+                
+                <label>Change Password</label>
+                <input type="password" name="new_password" placeholder="Leave blank to keep current password">
+                
+                <button type="submit">Securely Update Details</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

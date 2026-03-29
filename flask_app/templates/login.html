@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Attendance System</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; margin-top: 100px; background: #f0f2f5;}
+        .login-box { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 350px;}
+        .login-box h2 { text-align: center; color: #333; margin-bottom: 2rem;}
+        input { width: 100%; padding: 12px; margin: 10px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;}
+        button { width: 100%; padding: 12px; background: #0866ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; margin-top: 10px;}
+        button:hover { background: #0056e0; }
+        .error { color: #dc3545; font-size: 0.9em; margin-bottom: 10px; text-align: center; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>Secure Login</h2>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="error">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Log in to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

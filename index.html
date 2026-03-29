@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAE CIT 2nd Year | Attendance Management</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">GPI</div>
+            </div>
+
+            <div class="class-groups">
+                <div class="group-label">CIT Department</div>
+                <button class="class-item" onclick="selectClass('cit-1')" id="btn-cit-1">
+                    <span class="class-name">CIT 1st Year</span>
+                    <span class="teacher-name">Mam Batool</span>
+                </button>
+                <button class="class-item active" onclick="selectClass('cit-2')" id="btn-cit-2">
+                    <span class="class-name">CIT 2nd Year</span>
+                    <span class="teacher-name">Mam Chand</span>
+                </button>
+
+                <div class="group-label">Civil Department</div>
+                <button class="class-item" onclick="selectClass('civil-1')" id="btn-civil-1">
+                    <span class="class-name">Civil 1st Year</span>
+                    <span class="teacher-name">Sir Adnan</span>
+                </button>
+                <button class="class-item" onclick="selectClass('civil-2')" id="btn-civil-2">
+                    <span class="class-name">Civil 2nd Year</span>
+                    <span class="teacher-name">Sir Jameel</span>
+                </button>
+
+                <div class="group-label">Electrical Department</div>
+                <button class="class-item" onclick="selectClass('elec-1')" id="btn-elec-1">
+                    <span class="class-name">Electrical 1st Year</span>
+                    <span class="teacher-name">Sir Zameer</span>
+                </button>
+                <button class="class-item" onclick="selectClass('elec-2')" id="btn-elec-2">
+                    <span class="class-name">Electrical 2nd Year</span>
+                    <span class="teacher-name">Sir Hassan</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="content-wrapper">
+            <nav>
+                <div class="nav-tabs">
+                    <button class="tab-btn active" id="tab-mark" onclick="switchTab('mark')">Mark Attendance</button>
+                    <button class="tab-btn" id="tab-history" onclick="switchTab('history')">View Records</button>
+                </div>
+                <div class="nav-links" style="display: flex; align-items: center; gap: 1rem;">
+                    <button id="theme-toggle" class="status-btn"
+                        style="background: var(--glass); display: flex; align-items: center; gap: 0.5rem;">
+                        <span id="theme-icon">☀️</span> Light Mode
+                    </button>
+                    <span id="role-badge"
+                        style="background: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: white;">CHAND
+                        SAIFI</span>
+                </div>
+            </nav>
+
+            <!-- MARK ATTENDANCE SECTION -->
+            <main class="container" id="mark-section">
+                <header class="header-section">
+                    <div class="title-area">
+                        <p id="academic-year-text">Academic Year 2025-2026</p>
+                        <h1 id="current-class-title">Mark Attendance</h1>
+                    </div>
+                    <input type="date" id="attendance-date" class="date-selector">
+                </header>
+
+                <section class="summary-grid">
+                    <div class="summary-card">
+                        <h3>Total Students</h3>
+                        <div class="value" id="count-total">20</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Present</h3>
+                        <div class="value present" id="count-present">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Absent</h3>
+                        <div class="value absent" id="count-absent">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>On Leave</h3>
+                        <div class="value leave" id="count-leave">0</div>
+                    </div>
+                </section>
+
+                <section class="attendance-list">
+                    <div class="search-bar">
+                        <input type="text" id="search-input" placeholder="Search by Roll No or Name...">
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body">
+                            <!-- Students will be injected here by JS -->
+                        </tbody>
+                    </table>
+                </section>
+
+                <div class="save-section">
+                    <button class="btn-primary" id="save-attendance">Save Daily Record</button>
+                </div>
+            </main>
+
+            <!-- VIEW HISTORY SECTION -->
+            <main class="container" id="history-section">
+                <header class="header-section">
+                    <div class="title-area">
+                        <p>Database Records</p>
+                        <h1>Attendance History</h1>
+                    </div>
+                    <button class="status-btn" onclick="clearAllData()"
+                        style="background: var(--danger); color: white; border: none;">Clear Database</button>
+                </header>
+
+                <!-- NEW: STUDENT PERFORMANCE SUMMARY SECTION -->
+                <section class="performance-summary-area" style="margin-bottom: 3rem;">
+                    <div class="title-area" style="margin-bottom: 1.5rem;">
+                        <h2 style="font-size: 1.5rem;">Student Cumulative Performance (%)</h2>
+                        <p style="color: var(--text-dim); font-size: 0.9rem;">Total Attendance & Percentage across all
+                            saved
+                            records</p>
+                    </div>
+                    <div class="performance-grid" id="performance-summary-container">
+                        <!-- Cumulative student stats will be injected here -->
+                    </div>
+                </section>
+
+                <header class="header-section"
+                    style="margin-top: 4rem; border-top: 1px solid var(--glass-border); padding-top: 2rem;">
+                    <div class="title-area">
+                        <h2>Daily History Log</h2>
+                        <p>Click any card to edit that day's attendance</p>
+                    </div>
+                </header>
+
+                <section class="history-grid" id="history-container">
+                    <!-- Records will be injected here -->
+                    <div style="text-align: center; padding: 3rem; color: var(--text-dim);">
+                        No records found. Save some attendance first!
+                    </div>
+                </section>
+            </main>
+
+            <!-- Success Toast -->
+            <div id="toast"
+                style="position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 1rem 2rem; border-radius: 12px; transform: translateY(100px); transition: transform 0.3s; z-index: 1000;">
+                Attendance Saved to Database!
+            </div>
+        </div> <!-- End .content-wrapper -->
+    </div> <!-- End .app-layout -->
+
+    <script src="app.js"></script>
+</body>
+
+</html>
