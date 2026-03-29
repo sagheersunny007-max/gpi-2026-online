@@ -13,7 +13,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-super-secret-key-change-in-production')
 
 # Use DATABASE_URL from environment for Postgres setup on Vercel
-database_url = os.environ.get('DATABASE_URL', 'sqlite:///attendance.db')
+database_url = os.environ.get('DATABASE_URL', 'sqlite:////tmp/attendance.db')
+
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
